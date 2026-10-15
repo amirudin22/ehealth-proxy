@@ -4,6 +4,7 @@ const { cors } = require('./_util');
 const ROWS = [
   ['GET', '/api/health', 'Cek hidup + panaskan sesi'],
   ['GET', '/api/poli', 'Daftar poli harian'],
+  ['GET', '/api/tanggal?idunitkerja=&idbppoli=', 'Tanggal layanan + sisa kuota'],
   ['POST', '/api/cek-nik', '{idunitkerja, NIK} — cari data pasien'],
   ['POST', '/api/cek-bpjs', '{idunitkerja, NIK} — validasi BPJS'],
   ['POST', '/api/daftar', '{...arrdata} — buat antrean'],
