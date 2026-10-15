@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Antre Puskesmas — Daftar Online Puskesmas Surabaya</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ BERANDA ============ -->
+  <section class="screen active" id="s-beranda">
+    <div class="hero">
+      <div class="hero-emoji">🏥</div>
+      <h1>Antre Puskesmas</h1>
+      <p class="muted">Daftar antrean puskesmas Surabaya dari HP,<br>tanpa antre di tempat</p>
+    </div>
+    <button class="btn primary" onclick="go('s-wilayah')">📝&nbsp; Daftar Antrean Baru</button>
+    <button class="btn secondary" onclick="go('s-batal')">❌&nbsp; Batalkan Antrean</button>
+    <p class="footnote">Pendaftaran resmi melalui sistem eHealth Dinas Kesehatan Kota Surabaya.</p>
+  </section>
+
+  <!-- ============ 1. WILAYAH ============ -->
+  <section class="screen" id="s-wilayah">
+    <button class="back" onclick="go('s-beranda')">← Kembali</button>
+    <div class="step">Langkah 1 dari 8</div>
+    <div class="bar"><div class="fill" style="width:12%"></div></div>
+    <h2>Pilih Wilayah</h2>
+    <p class="muted">Puskesmas ada di wilayah mana?</p>
+    <div id="list-wilayah"></div>
+  </section>
+
+  <!-- ============ 2. PUSKESMAS ============ -->
+  <section class="screen" id="s-puskesmas">
+    <button class="back" onclick="go('s-wilayah')">← Kembali</button>
+    <div class="step">Langkah 2 dari 8</div>
+    <div class="bar"><div class="fill" style="width:25%"></div></div>
+    <h2>Pilih Puskesmas</h2>
+    <p class="muted" id="sub-puskesmas"></p>
+    <label class="lbl">Cari nama puskesmas</label>
+    <input class="input" id="cari-pusk" placeholder="Contoh: Asemrowo" oninput="renderPuskesmas()">
+    <div id="list-puskesmas"></div>
+  </section>
+
+  <!-- ============ 3. POLI ============ -->
+  <section class="screen" id="s-poli">
+    <button class="back" onclick="go('s-puskesmas')">← Kembali</button>
+    <div class="step">Langkah 3 dari 8</div>
+    <div class="bar"><div class="fill" style="width:37%"></div></div>
+    <h2>Pilih Poli</h2>
+    <p class="muted" id="sub-poli"></p>
+    <div id="list-poli"><div class="loading">Mengambil data…</div></div>
+  </section>
+
+  <!-- ============ 4. TANGGAL ============ -->
+  <section class="screen" id="s-tanggal">
+    <button class="back" onclick="go('s-poli')">← Kembali</button>
+    <div class="step">Langkah 4 dari 8</div>
+    <div class="bar"><div class="fill" style="width:50%"></div></div>
+    <h2>Pilih Tanggal</h2>
+    <p class="muted" id="sub-tanggal"></p>
+    <div id="list-tanggal"><div class="loading">Mengambil data…</div></div>
+  </section>
+
+  <!-- ============ 5. NIK ============ -->
+  <section class="screen" id="s-nik">
+    <button class="back" onclick="go('s-tanggal')">← Kembali</button>
+    <div class="step">Langkah 5 dari 8</div>
+    <div class="bar"><div class="fill" style="width:62%"></div></div>
+    <h2>Masukkan NIK</h2>
+    <p class="muted">16 angka sesuai KTP</p>
+    <label class="lbl">Nomor Induk Kependudukan (NIK)</label>
+    <input class="input" id="in-nik" inputmode="numeric" maxlength="16" placeholder="Contoh: 3578xxxxxxxxxx">
+    <div class="hint" id="hint-nik">0/16 digit</div>
+    <div class="err" id="err-nik"></div>
+    <button class="btn primary" id="btn-cek" onclick="cekNik()">Cek Data →</button>
+  </section>
+
+  <!-- ============ 6. DATA PASIEN ============ -->
+  <section class="screen" id="s-data">
+    <button class="back" onclick="go('s-nik')">← Kembali</button>
+    <div class="step">Langkah 6 dari 8</div>
+    <div class="bar"><div class="fill" style="width:75%"></div></div>
+    <h2>Data Pasien</h2>
+    <p class="muted" id="sub-nik"></p>
+    <div id="box-data"></div>
+  </section>
+
+  <!-- ============ 7. PENJAMIN ============ -->
+  <section class="screen" id="s-penjamin">
+    <button class="back" onclick="go('s-data')">← Kembali</button>
+    <div class="step">Langkah 7 dari 8</div>
+    <div class="bar"><div class="fill" style="width:87%"></div></div>
+    <h2>Pembayaran</h2>
+    <p class="muted">Berobat pakai apa?</p>
+    <div class="card" id="card-bpjs" onclick="pilihTipe('2')">
+      <div class="card-title">💳 BPJS Kesehatan</div>
+      <div class="card-sub">Punya kartu BPJS / KIS</div>
+    </div>
+    <div class="card" id="card-umum" onclick="pilihTipe('1')">
+      <div class="card-title">💵 Umum</div>
+      <div class="card-sub">Bayar sendiri / asuransi lain</div>
+    </div>
+    <div id="box-noka" style="display:none">
+      <label class="lbl">Nomor Kartu BPJS (13 angka)</label>
+      <input class="input" id="in-noka" inputmode="numeric" maxlength="13" placeholder="Contoh: 0001234567890">
+      <div class="hint" id="hint-noka">0/13 digit</div>
+    </div>
+    <div class="err" id="err-penjamin"></div>
+    <button class="btn primary" onclick="lanjutPenjamin()">Lanjut →</button>
+  </section>
+
+  <!-- ============ 8. KONFIRMASI ============ -->
+  <section class="screen" id="s-konfirmasi">
+    <button class="back" onclick="go('s-penjamin')">← Kembali</button>
+    <div class="step">Langkah 8 dari 8</div>
+    <div class="bar"><div class="fill" style="width:100%"></div></div>
+    <h2>Konfirmasi</h2>
+    <p class="muted">Periksa lagi sebelum daftar</p>
+    <div id="box-konfirmasi"></div>
+    <div class="err" id="err-daftar"></div>
+    <button class="btn success" id="btn-daftar" onclick="daftar()">✅&nbsp; Ya, Daftarkan</button>
+  </section>
+
+  <!-- ============ SUKSES ============ -->
+  <section class="screen" id="s-sukses">
+    <div class="hero">
+      <div class="hero-emoji">🎉</div>
+      <h1 class="green">Pendaftaran Berhasil!</h1>
+      <p class="muted">Tunjukkan nomor ini ke petugas puskesmas</p>
+    </div>
+    <div class="nomor-box">
+      <div class="nomor-label">NOMOR ANTREAN ANDA</div>
+      <div class="nomor" id="ok-nomor">-</div>
+      <div class="nomor-kode" id="ok-kode"></div>
+    </div>
+    <div id="box-sukses"></div>
+    <p class="tip">💡 Screenshot layar ini sebagai bukti pendaftaran.</p>
+    <button class="btn primary" onclick="go('s-beranda')">🏠&nbsp; Kembali ke Beranda</button>
+  </section>
+
+  <!-- ============ BATAL: INPUT ============ -->
+  <section class="screen" id="s-batal">
+    <button class="back" onclick="go('s-beranda')">← Kembali</button>
+    <h2>Batalkan Antrean</h2>
+    <p class="muted">Tidak jadi berobat? Batalkan di sini.</p>
+    <label class="lbl">Kode Antrean</label>
+    <input class="input" id="in-kode" placeholder="Kode dari bukti pendaftaran">
+    <div class="hint">Kode tertera di layar bukti pendaftaran</div>
+    <div class="err" id="err-batal"></div>
+    <button class="btn primary" onclick="batalLanjut()">Lanjut →</button>
+    <p class="footnote">Antrean yang dibatalkan tidak bisa dikembalikan.</p>
+  </section>
+
+  <!-- ============ BATAL: KONFIRMASI ============ -->
+  <section class="screen" id="s-batal-ok">
+    <button class="back" onclick="go('s-batal')">← Kembali</button>
+    <h2>Yakin Batalkan?</h2>
+    <p class="muted">Periksa kodenya sekali lagi</p>
+    <div class="infocard"><div class="irow"><div class="ilabel">Kode antrean</div><div class="ivalue" id="batal-kode"></div></div></div>
+    <div class="err" id="err-batal2"></div>
+    <button class="btn danger" id="btn-batal" onclick="batalkan()">❌&nbsp; Ya, Batalkan</button>
+  </section>
+
+  <!-- ============ BATAL: HASIL ============ -->
+  <section class="screen" id="s-batal-hasil">
+    <div class="hero">
+      <div class="hero-emoji">🗑️</div>
+      <h1>Antrean Dibatalkan</h1>
+      <p class="muted" id="batal-hasil-sub"></p>
+    </div>
+    <button class="btn primary" onclick="go('s-beranda')">🏠&nbsp; Kembali ke Beranda</button>
+  </section>
+
+</div>
+
+<div id="overlay" class="overlay" style="display:none">
+  <div class="spinner"></div>
+  <div id="overlay-text">Mengambil data…</div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
